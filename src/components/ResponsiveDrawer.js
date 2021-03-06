@@ -14,14 +14,13 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import Hidden from '@material-ui/core/Hidden';
-import logo from '../assets/logo-dark.svg';
 import SearchBar from './SearchBar';
 import AccountMenu from './AccountMenu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Bookmarks, Favorite, Home, Grade, Schedule } from '@material-ui/icons';
+import logo from '../assets/flick-note-logo-light.svg';
+import ytLogo from '../assets/youtube-logo-light.png';
 
 const drawerWidth = 240;
 
@@ -72,31 +71,36 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
+    padding: theme.spacing(0, 2),
     ...theme.mixins.toolbar, // necessary for content to be below app bar
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    maxWidth: '1600px',
+    margin: '0 auto',
   },
   drawerPaper: {
     width: drawerWidth,
   },
   logo: {
     display: 'none',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       display: 'flex',
     },
   },
   logoImg: {
     width: '125px',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       width: '150px',
     },
   },
   grow: {
     flexGrow: '1'
   },
+  accountMenuIcon: {
+    marginLeft: theme.spacing(2)
+  }
 }));
 
 const drawerItems = [
@@ -134,9 +138,8 @@ const ResponsiveDrawer = () => {
 
   const handleWindowResize = () => {
     setIsMobile(window.innerWidth < 960);
-    if (window.innerWidth > 960) {
-      setOpen(false);
-    }
+    setOpen(false);
+    setMobileOpen(false);
   }
 
   useEffect(() => {
@@ -150,6 +153,8 @@ const ResponsiveDrawer = () => {
   const drawer = (
     <div>
       <div className={classes.toolbar}>
+        {isMobile && <img src={logo} className={classes.logoImg} alt="" />}
+        <div className={classes.grow}></div>
         <IconButton onClick={isMobile ? handleMobileDrawerToggle : handleDrawerToggle}>
           <ChevronLeftIcon />
         </IconButton>
@@ -196,10 +201,14 @@ const ResponsiveDrawer = () => {
           </div>
           <SearchBar />
           <div className={classes.grow} />
+          <div className={classes.logo}>
+            <img src={ytLogo} alt="logo" width="200px" />
+          </div>
           <IconButton
             edge="end"
             onClick={handleAccountMenuOpen}
             color="inherit"
+            className={classes.accountMenuIcon}
           >
             <AccountCircle />
           </IconButton>
@@ -257,17 +266,6 @@ const ResponsiveDrawer = () => {
           imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
           arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
           donec massa sapien faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-          facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-          tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-          consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-          vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-          hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-          tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-          nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-          accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
         </Typography>
       </main>
     </div>

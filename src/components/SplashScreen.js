@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
-import logo from '../assets/flick-note-logo-light.svg';
-import ytLogo from '../assets/youtube-logo-light.png';
 import { StyleSheet, css } from 'aphrodite';
 import { fadeInDown, fadeInUp } from 'react-animations';
+import logo from '../assets/flick-note-logo-light.svg';
+import ytLogo from '../assets/youtube-logo-light.png';
 
 const useStyles = makeStyles((theme) => ({
   splash: {

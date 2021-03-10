@@ -10,8 +10,8 @@ import logo from '../../assets/flick-note-logo-light.svg';
 import ytLogo from '../../assets/youtube-logo-light.png';
 
 const TopBar = (props) => {
-  const {classes, open, isMobile, handleMobileDrawerToggle, handleDrawerToggle, 
-    handleAccountMenuOpen, anchorEl, handleMenuClose } = props;
+  const { classes, open, isMobile, handleMobileDrawerToggle, handleDrawerToggle, 
+    handleAccountMenuOpen, anchorEl, handleMenuClose, onSignOut } = props;
   return (
     <>
       <AppBar
@@ -47,7 +47,8 @@ const TopBar = (props) => {
       </AppBar>
       <AccountMenu 
         anchorEl={anchorEl} 
-        handleMenuClose={handleMenuClose} 
+        handleMenuClose={handleMenuClose}
+        onSignOut={onSignOut}
       />
     </>
   );

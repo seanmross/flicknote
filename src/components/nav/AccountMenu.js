@@ -4,7 +4,7 @@ import Menu from '@material-ui/core/Menu';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { AccountBox, ExitToApp, Feedback } from '@material-ui/icons';
 
-const AccountMenu = ({ anchorEl, handleMenuClose }) => {
+const AccountMenu = ({ anchorEl, handleMenuClose, onSignOut }) => {
   const anchorOrigin = { vertical: 'bottom', horizontal: 'right' };
   const transformOrigin = { vertical: 'top', horizontal: 'right' };
   const isMenuOpen = Boolean(anchorEl);
@@ -35,7 +35,7 @@ const AccountMenu = ({ anchorEl, handleMenuClose }) => {
         <ListItemIcon>
           <ExitToApp fontSize="small" />
         </ListItemIcon>
-        <Typography variant="inherit">Sign out</Typography>
+        <Typography variant="inherit" onClick={onSignOut}>Sign out</Typography>
       </MenuItem>
     </Menu>
   );

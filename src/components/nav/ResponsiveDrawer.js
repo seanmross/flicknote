@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ResponsiveDrawer = () => {
+const ResponsiveDrawer = ({ onSignOut }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -147,6 +147,7 @@ const ResponsiveDrawer = () => {
           handleAccountMenuOpen={handleAccountMenuOpen} 
           anchorEl={anchorEl}
           handleMenuClose={handleMenuClose} 
+          onSignOut={onSignOut}
         />
 
         {/* Mobile drawer */}

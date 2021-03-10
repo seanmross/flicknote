@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
 import clsx from 'clsx';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -17,22 +17,6 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-  },
-  menuButton: {
-    marginRight: theme.spacing(1),
-    [theme.breakpoints.up('md')]: {
-      marginRight: theme.spacing(4),
-    },
-  },
-  hide: {
-    display: 'none',
   },
   drawer: {
     width: drawerWidth,
@@ -76,27 +60,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '1600px',
     margin: '0 auto',
   },
-  logo: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  logoImg: {
-    width: '125px',
-    [theme.breakpoints.up('md')]: {
-      width: '150px',
-    },
-  },
-  grow: {
-    flexGrow: '1'
-  },
-  accountMenuIcon: {
-    marginLeft: theme.spacing(2)
-  }
 }));
 
-const ResponsiveDrawer = ({ onSignOut }) => {
+const ResponsiveDrawer = ({ onSignOut, user }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -139,8 +105,6 @@ const ResponsiveDrawer = ({ onSignOut }) => {
     <BrowserRouter>
       <div className={classes.root}>
         <TopBar 
-          classes={classes} 
-          open={open} 
           isMobile={isMobile} 
           handleMobileDrawerToggle={handleMobileDrawerToggle}
           handleDrawerToggle={handleDrawerToggle}
@@ -148,6 +112,7 @@ const ResponsiveDrawer = ({ onSignOut }) => {
           anchorEl={anchorEl}
           handleMenuClose={handleMenuClose} 
           onSignOut={onSignOut}
+          user={user}
         />
 
         {/* Mobile drawer */}
@@ -165,7 +130,6 @@ const ResponsiveDrawer = ({ onSignOut }) => {
               isMobile={isMobile} 
               handleMobileDrawerToggle={handleMobileDrawerToggle} 
               handleDrawerToggle={handleDrawerToggle}
-              classes={classes} 
             />
           </Drawer>
         </Hidden>
@@ -189,7 +153,6 @@ const ResponsiveDrawer = ({ onSignOut }) => {
               isMobile={isMobile} 
               handleMobileDrawerToggle={handleMobileDrawerToggle} 
               handleDrawerToggle={handleDrawerToggle} 
-              classes={classes} 
             />
           </Drawer>
         </Hidden>

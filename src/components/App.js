@@ -3,7 +3,7 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from '../config/theme';
 import ResponsiveDrawer from './nav/ResponsiveDrawer';
-import SplashScreen from './SplashScreen';
+import Splash from './pages/Splash';
 
 // firebase
 import firebase from 'firebase/app';
@@ -40,12 +40,14 @@ const App = () => {
     auth.signOut();
   }
 
+  console.log(user)
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       {user ? 
-        <ResponsiveDrawer onSignOut={onSignOut} /> : 
-        <SplashScreen onSignIn={onSignIn} loading={loading} user={user} />}
+        <ResponsiveDrawer onSignOut={onSignOut} user={user} /> : 
+        <Splash onSignIn={onSignIn} loading={loading} user={user} />}
     </ThemeProvider>
   );
 }

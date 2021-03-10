@@ -6,8 +6,28 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import { Bookmarks, Favorite, Home, Grade, Schedule } from '@material-ui/icons';
-import logo from '../../assets/flick-note-logo-light.svg';
+import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+import logo from '../../assets/flick-note-logo-light.svg';
+
+const useStyles = makeStyles((theme) => ({
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 2),
+    ...theme.mixins.toolbar, // necessary for content to be below app bar
+  },
+  grow: {
+    flexGrow: '1'
+  },
+  logoImg: {
+    width: '125px',
+    [theme.breakpoints.up('md')]: {
+      width: '150px',
+    },
+  },
+}));
 
 const drawerItems = [
   { name: 'Home', icon: <Home />, link: '/' },
@@ -17,8 +37,9 @@ const drawerItems = [
   { name: 'Study Later', icon: <Schedule />, link: '/study-later' },
 ];
 
-const DrawerContent = ({isMobile, handleMobileDrawerToggle, handleDrawerToggle, classes}) => {
-  
+const DrawerContent = ({isMobile, handleMobileDrawerToggle, handleDrawerToggle}) => {
+  const classes = useStyles();
+
   const renderLink = (item) => (
     <ListItem button component={Link} to={item.link} key={item.name}>
       <ListItemIcon>{item.icon}</ListItemIcon>

@@ -1,29 +1,65 @@
-import clsx from 'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import { makeStyles } from '@material-ui/core/styles';
 import SearchBar from './SearchBar';
 import AccountMenu from './AccountMenu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import logo from '../../assets/flick-note-logo-light.svg';
 import ytLogo from '../../assets/youtube-logo-light.png';
 
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      marginRight: theme.spacing(4),
+    },
+  },
+  grow: {
+    flexGrow: '1'
+  },
+  logo: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+    },
+  },
+  logoImg: {
+    width: '125px',
+    [theme.breakpoints.up('md')]: {
+      width: '150px',
+    },
+  },
+  accountMenuIcon: {
+    marginLeft: theme.spacing(2)
+  },
+  userPhoto: {
+    height: '32px',
+    width: '32px',
+    borderRadius: '50%'
+  }
+}));
+
 const TopBar = (props) => {
-  const { classes, open, isMobile, handleMobileDrawerToggle, handleDrawerToggle, 
-    handleAccountMenuOpen, anchorEl, handleMenuClose, onSignOut } = props;
+  const classes = useStyles();
+  const { user } = props;
+  
   return (
     <>
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {[classes.appBarShift]: open && !isMobile})}
+        className={classes.appBar}
       >
         <Toolbar>
           <IconButton
             color="inherit"
-            onClick={isMobile ? handleMobileDrawerToggle : handleDrawerToggle}
+            onClick={props.isMobile ? props.handleMobileDrawerToggle : props.handleDrawerToggle}
             edge="start"
-            className={clsx(classes.menuButton, {[classes.hide]: open})}
+            className={classes.menuButton}
           >
             <MenuIcon />
           </IconButton>
@@ -37,18 +73,19 @@ const TopBar = (props) => {
           </div>
           <IconButton
             edge="end"
-            onClick={handleAccountMenuOpen}
+            onClick={props.handleAccountMenuOpen}
             color="inherit"
             className={classes.accountMenuIcon}
           >
-            <AccountCircle />
+            {user.photoURL ? <img src={user.photoURL} className={classes.userPhoto} alt="" /> : <AccountCircle />}
           </IconButton>
         </Toolbar>
       </AppBar>
       <AccountMenu 
-        anchorEl={anchorEl} 
-        handleMenuClose={handleMenuClose}
-        onSignOut={onSignOut}
+        anchorEl={props.anchorEl} 
+        handleMenuClose={props.handleMenuClose}
+        onSignOut={props.onSignOut}
+        user={user}
       />
     </>
   );

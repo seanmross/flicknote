@@ -1,13 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { StyleSheet, css } from 'aphrodite';
-import { fadeIn} from 'react-animations';
-import logo from '../assets/flick-note-logo-light.svg';
-import ytLogo from '../assets/youtube-logo-light.png';
-import googleLogo from '../assets/google-logo.svg';
 import Icon from "@material-ui/core/Icon";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { StyleSheet, css } from 'aphrodite';
+import { fadeIn } from 'react-animations';
+import logo from '../../assets/flick-note-logo-light.svg';
+import ytLogo from '../../assets/youtube-logo-light.png';
+import googleLogo from '../../assets/google-logo.svg';
 
 const useStyles = makeStyles((theme) => ({
   splash: {
@@ -62,7 +62,7 @@ const googleIcon = (
   </Icon>
 );
 
-const SplashScreen = ({ onSignIn, loading, user }) => {
+const Splash = ({ onSignIn, loading, user }) => {
   const classes = useStyles();
 
   return (
@@ -87,4 +87,4 @@ const SplashScreen = ({ onSignIn, loading, user }) => {
     </div>
   );
 }
-export default SplashScreen;
+export default Splash;

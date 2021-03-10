@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from '../config/theme';
@@ -9,8 +9,6 @@ import SplashScreen from './SplashScreen';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-
-// react-firebase-hooks
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 // firebase config
@@ -31,44 +29,23 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 const App = () => {
-  const [loading, setLoading] = useState(null);
-  const [showSplash, setShowSplash] = useState(null);
-  const [user] = useAuthState(auth);
-  
-  const signInWithGoogle = () => {
+  const [user, loading] = useAuthState(auth);
+
+  const onSignIn = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithRedirect(provider);
   }
 
-  const signOut = () => {
+  const onSignOut = () => {
     auth.signOut();
-    loadSession();
   }
-
-  const loadSession = () => {
-    setShowSplash(true);
-    setLoading(true);
-    window.setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }
-
-  useEffect(() => {
-    loadSession();
-  }, []);
-
-  useEffect(() => {
-    if (!loading && user) {
-      setShowSplash(false);
-    }
-  }, [loading, user]);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {showSplash ? 
-        <SplashScreen loading={loading} user={auth.currentUser} onSignIn={signInWithGoogle} /> : 
-        <ResponsiveDrawer onSignOut={signOut} />}
+      {user ? 
+        <ResponsiveDrawer onSignOut={onSignOut} /> : 
+        <SplashScreen onSignIn={onSignIn} loading={loading} user={user} />}
     </ThemeProvider>
   );
 }

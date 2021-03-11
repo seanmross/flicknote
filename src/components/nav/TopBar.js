@@ -77,7 +77,7 @@ const TopBar = (props) => {
             color="inherit"
             className={classes.accountMenuIcon}
           >
-            {user.photoURL ? <img src={user.photoURL} className={classes.userPhoto} alt="" /> : <AccountCircle />}
+            {user && user.photoURL ? <img src={user.photoURL} className={classes.userPhoto} alt="" /> : <AccountCircle />}
           </IconButton>
         </Toolbar>
       </AppBar>

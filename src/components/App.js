@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from '../config/theme';
 import ResponsiveDrawer from './nav/ResponsiveDrawer';
 import Splash from './pages/Splash';
-import GoogleAuth from './GoogleAuth';
 
 // firebase
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import useGoogleAuth from '../hooks/useGoogleAuth';
 
 // firebase config
 if (!firebase.apps.length) {
@@ -30,31 +29,22 @@ if (!firebase.apps.length) {
 // const auth = firebase.auth();
 
 const App = () => {
-  // const [user, loading] = useAuthState(auth);
+  const [auth, loading, isSignedIn] = useGoogleAuth();
 
-  // const onSignIn = () => {
-  //   const provider = new firebase.auth.GoogleAuthProvider();
-  //   auth.signInWithRedirect(provider);
-  // }
+  const onSignIn = () => {
+    auth.signIn();
+  }
 
-  // const onSignOut = () => {
-  //   auth.signOut();
-  // }
-
-  const [isSignedIn, setIsSignedIn] = useState(null);
-
-  const onAuthChange = (change) => {
-    console.log(change)
-    setIsSignedIn(change)
+  const onSignOut = () => {
+    auth.signOut();
   }
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {/* {user ? 
-        <ResponsiveDrawer onSignOut={onSignOut} user={user} /> : 
-        <Splash onSignIn={onSignIn} loading={loading} user={user} />} */}
-      <GoogleAuth isSignedIn={isSignedIn} onAuthChange={onAuthChange} /> 
+      {isSignedIn ? 
+        <ResponsiveDrawer onSignOut={onSignOut} /> : 
+        <Splash onSignIn={onSignIn} loading={loading} isSignedIn={isSignedIn} />}
     </ThemeProvider>
   );
 }

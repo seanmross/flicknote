@@ -20,7 +20,7 @@ const Home = () => {
     <div>
       <Typography variant="h4">home</Typography>
       <ul>
-        {videos.map(video => <li>video</li>)}
+        {videos.map(video => <li key={video.id.videoId}>{video.snippet.title}</li>)}
       </ul>
     </div>
     

@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 const TopBar = (props) => {
   const classes = useStyles();
   const { user } = props;
-  
+
   return (
     <>
       <AppBar
@@ -77,7 +77,7 @@ const TopBar = (props) => {
             color="inherit"
             className={classes.accountMenuIcon}
           >
-            {user && user.photoURL ? <img src={user.photoURL} className={classes.userPhoto} alt="" /> : <AccountCircle />}
+            {user ? <img src={user.photoURL} className={classes.userPhoto} alt="" /> : <AccountCircle />}
           </IconButton>
         </Toolbar>
       </AppBar>

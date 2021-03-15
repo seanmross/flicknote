@@ -62,7 +62,7 @@ const googleIcon = (
   </Icon>
 );
 
-const Splash = ({ onSignIn, loading, isSignedIn }) => {
+const Splash = ({ onSignIn, loading, user }) => {
   const classes = useStyles();
 
   return (
@@ -73,7 +73,7 @@ const Splash = ({ onSignIn, loading, isSignedIn }) => {
         </div>
         <img src={logo} alt="" className={`${classes.logo} ${css(animations.fadeIn)}`} />
         <img src={ytLogo} alt="" className={`${classes.ytLogo} ${css(animations.fadeIn)}`} />
-        <div className={`${classes.signInBtn} ${(loading || isSignedIn) && classes.hidden}`}>
+        <div className={`${classes.signInBtn} ${(loading || user) && classes.hidden}`}>
           <Button
             variant="contained"
             startIcon={googleIcon}

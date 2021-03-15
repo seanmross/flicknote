@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { BrowserRouter, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import DrawerContent from './DrawerContent';
 import TopBar from './TopBar';
-import Home from '../pages/Home';
-import Bookmarks from '../pages/Bookmarks';
-import Favorites from '../pages/Favorites';
-import TopNotes from '../pages/TopNotes';
-import StudyLater from '../pages/StudyLater';
 
 const drawerWidth = 240;
 
@@ -62,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ResponsiveDrawer = ({ onSignOut, user }) => {
+const ResponsiveDrawer = ({ onSignOut, user, children }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -102,71 +96,65 @@ const ResponsiveDrawer = ({ onSignOut, user }) => {
   }, []);
 
   return (
-    <BrowserRouter>
-      <div className={classes.root}>
-        <TopBar 
-          isMobile={isMobile} 
-          handleMobileDrawerToggle={handleMobileDrawerToggle}
-          handleDrawerToggle={handleDrawerToggle}
-          handleAccountMenuOpen={handleAccountMenuOpen} 
-          anchorEl={anchorEl}
-          handleMenuClose={handleMenuClose} 
-          onSignOut={onSignOut}
-          user={user}
-        />
+    <div className={classes.root}>
+      <TopBar 
+        isMobile={isMobile} 
+        handleMobileDrawerToggle={handleMobileDrawerToggle}
+        handleDrawerToggle={handleDrawerToggle}
+        handleAccountMenuOpen={handleAccountMenuOpen} 
+        anchorEl={anchorEl}
+        handleMenuClose={handleMenuClose} 
+        onSignOut={onSignOut}
+        user={user}
+      />
 
-        {/* Mobile drawer */}
-        <Hidden mdUp>
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor="left"
-            open={mobileOpen}
-            onClose={handleMobileDrawerToggle}
-            classes={{paper: classes.mobileDrawerPaper}}
-            ModalProps={{keepMounted: true}}
-          >
-            <DrawerContent 
-              isMobile={isMobile} 
-              handleMobileDrawerToggle={handleMobileDrawerToggle} 
-              handleDrawerToggle={handleDrawerToggle}
-            />
-          </Drawer>
-        </Hidden>
+      {/* Mobile drawer */}
+      <Hidden mdUp>
+        <Drawer
+          container={container}
+          variant="temporary"
+          anchor="left"
+          open={mobileOpen}
+          onClose={handleMobileDrawerToggle}
+          classes={{paper: classes.mobileDrawerPaper}}
+          ModalProps={{keepMounted: true}}
+        >
+          <DrawerContent 
+            isMobile={isMobile} 
+            handleMobileDrawerToggle={handleMobileDrawerToggle} 
+            handleDrawerToggle={handleDrawerToggle}
+          />
+        </Drawer>
+      </Hidden>
 
-        {/* Desktop drawer */}
-        <Hidden smDown>
-          <Drawer
-            variant="permanent"
-            className={clsx(classes.drawer, {
+      {/* Desktop drawer */}
+      <Hidden smDown>
+        <Drawer
+          variant="permanent"
+          className={clsx(classes.drawer, {
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+          })}
+          classes={{
+            paper: clsx({
               [classes.drawerOpen]: open,
               [classes.drawerClose]: !open,
-            })}
-            classes={{
-              paper: clsx({
-                [classes.drawerOpen]: open,
-                [classes.drawerClose]: !open,
-              }),
-            }}
-          >
-            <DrawerContent 
-              isMobile={isMobile} 
-              handleMobileDrawerToggle={handleMobileDrawerToggle} 
-              handleDrawerToggle={handleDrawerToggle} 
-            />
-          </Drawer>
-        </Hidden>
-        
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Route path="/" exact component={Home} />
-          <Route path="/bookmarks" exact component={Bookmarks} />
-          <Route path="/favorites" exact component={Favorites} />
-          <Route path="/top-notes" exact component={TopNotes} />
-          <Route path="/study-later" exact component={StudyLater} />
-        </main>
-      </div>
-    </BrowserRouter>
+            }),
+          }}
+        >
+          <DrawerContent 
+            isMobile={isMobile} 
+            handleMobileDrawerToggle={handleMobileDrawerToggle} 
+            handleDrawerToggle={handleDrawerToggle} 
+          />
+        </Drawer>
+      </Hidden>
+      
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        {children}
+      </main>
+    </div>
   );
 }
 export default ResponsiveDrawer;

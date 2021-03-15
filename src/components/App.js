@@ -1,50 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import theme from '../config/theme';
 import ResponsiveDrawer from './nav/ResponsiveDrawer';
 import Splash from './pages/Splash';
+import Home from './pages/Home';
+import Bookmarks from './pages/Bookmarks';
+import Favorites from './pages/Favorites';
+import TopNotes from './pages/TopNotes';
+import StudyLater from './pages/StudyLater';
 
 // firebase
 import firebase from 'firebase/app';
-import 'firebase/firestore';
 import 'firebase/auth';
-import useGoogleAuth from '../hooks/useGoogleAuth';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { FIREBASE_CONFIG } from '../config/firebase';
 
 // firebase config
 if (!firebase.apps.length) {
-  firebase.initializeApp({
-    apiKey: "AIzaSyA2AG9Srr56VotdORkGDNCwUpHzD78EmE4",
-    authDomain: "flicknote-7a643.firebaseapp.com",
-    projectId: "flicknote-7a643",
-    storageBucket: "flicknote-7a643.appspot.com",
-    messagingSenderId: "27120572529",
-    appId: "1:27120572529:web:62da7b36aba7842e84a3d0",
-    measurementId: "G-0NVN21QJV0"
-  });
+  firebase.initializeApp(FIREBASE_CONFIG);
 } else {
   firebase.app(); // if already initialized, use that one
 }
 
-// const auth = firebase.auth();
+const auth = firebase.auth();
 
 const App = () => {
-  const [auth, loading, isSignedIn] = useGoogleAuth();
+  const [user, loading] = useAuthState(auth);
+  const [accessToken, setAccessToken] = useState(null);
 
-  const onSignIn = () => {
-    auth.signIn();
+  const onSignIn = async () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/youtube.force-ssl');
+    const userCredential = await auth.signInWithPopup(provider);
+    setAccessToken(userCredential.credential.accessToken);
   }
 
   const onSignOut = () => {
     auth.signOut();
   }
 
+  const mainContent = (
+    <Router>
+      <ResponsiveDrawer onSignOut={onSignOut} user={user}>
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/bookmarks" component={Bookmarks} />
+          <Route path="/favorites" component={Favorites} />
+          <Route path="/top-notes" component={TopNotes} />
+          <Route path="/study-later" component={StudyLater} />
+          <Redirect to="/" />
+        </Switch>
+      </ResponsiveDrawer>
+    </Router>
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {isSignedIn ? 
-        <ResponsiveDrawer onSignOut={onSignOut} /> : 
-        <Splash onSignIn={onSignIn} loading={loading} isSignedIn={isSignedIn} />}
+      {user ? mainContent : 
+        <Splash onSignIn={onSignIn} loading={loading} user={user} />}
     </ThemeProvider>
   );
 }

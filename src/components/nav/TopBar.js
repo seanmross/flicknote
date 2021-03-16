@@ -35,7 +35,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   accountMenuIcon: {
-    marginLeft: theme.spacing(2)
+    marginLeft: 0,
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(2),
+    },
   },
   userPhoto: {
     height: '32px',

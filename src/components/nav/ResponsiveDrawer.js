@@ -50,7 +50,13 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: 0,
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(2),
+    },
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(3),
+    },
     maxWidth: '1600px',
     margin: '0 auto',
   },

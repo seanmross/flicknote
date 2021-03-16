@@ -1,12 +1,20 @@
-import Typography from '@material-ui/core/Typography';
 import { useEffect, useState } from 'react';
 import youtube from '../../api/youtube';
+import VideoTile from '../VideoTile';
+import Grid from '@material-ui/core/Grid';
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
-  
+
   const getVideos = async () => {
-    const { data } = await youtube.get('/videos');
+    const { data } = await youtube.get('/videos', {
+      params: {
+        part: 'snippet,statistics,contentDetails',
+        chart: 'mostPopular',
+        regionCode: 'US',
+        maxResults: 10
+      }
+    });
     setVideos(data.items);
   }
 
@@ -15,13 +23,11 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <Typography variant="h4">home</Typography>
-      <ul>
-        {videos.map(video => <li key={video.id}>{video.snippet.title}</li>)}
-      </ul>
-    </div>
-    
+    <Grid container spacing={2}>
+      {videos.map(video => (
+        <VideoTile video={video} key={video.id}></VideoTile>
+      ))}
+    </Grid>
   );
 }
 export default Home;

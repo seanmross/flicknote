@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -49,7 +50,17 @@ const useStyles = makeStyles((theme) => ({
 
 const TopBar = (props) => {
   const classes = useStyles();
-  const { user } = props;
+  const { user, isMobile, handleMobileDrawerToggle, 
+    handleDrawerToggle, onSignOut } = props;
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
 
   return (
     <>
@@ -60,7 +71,7 @@ const TopBar = (props) => {
         <Toolbar>
           <IconButton
             color="inherit"
-            onClick={props.isMobile ? props.handleMobileDrawerToggle : props.handleDrawerToggle}
+            onClick={isMobile ? handleMobileDrawerToggle : handleDrawerToggle}
             edge="start"
             className={classes.menuButton}
           >
@@ -76,7 +87,7 @@ const TopBar = (props) => {
           </div>
           <IconButton
             edge="end"
-            onClick={props.handleAccountMenuOpen}
+            onClick={handleMenuOpen}
             color="inherit"
             className={classes.accountMenuIcon}
           >
@@ -85,9 +96,9 @@ const TopBar = (props) => {
         </Toolbar>
       </AppBar>
       <AccountMenu 
-        anchorEl={props.anchorEl} 
-        handleMenuClose={props.handleMenuClose}
-        onSignOut={props.onSignOut}
+        anchorEl={menuAnchorEl} 
+        handleMenuClose={handleMenuClose}
+        onSignOut={onSignOut}
         user={user}
       />
     </>

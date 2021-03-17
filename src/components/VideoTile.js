@@ -1,14 +1,9 @@
-import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
-import numeral from 'numeral';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import youtube from '../api/youtube';
-import './VideoTile.scss';
+import VideoTileDetails from './VideoTileDetails';
+import useChannel from '../hooks/useChannel';
 
 const useStyles = makeStyles((theme) => ({
   gridItem: {
@@ -53,15 +48,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(1),
   },
-  videoTitle: {
-    fontWeight: 'bold',
-  },
-  subHeaderText: {
-    color: theme.palette.text.secondary
-  },
-  bullet: {
-    margin: '0 2px'
-  },
   hide: {
     display: 'none'
   },
@@ -93,37 +79,12 @@ const useStyles = makeStyles((theme) => ({
 
 const VideoTile = ({ video }) => {
   const classes = useStyles();
-  const [channelInfo, setChannelInfo] = useState(null);
-  const { snippet, statistics, contentDetails } = video;
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    getChannelInfo(video.snippet.channelId);
-  }, [video]);
-
-  const getChannelInfo = async (id) => {
-    const { data } = await youtube.get('/channels', {
-      params: {
-        part: 'snippet',
-        id
-      }
-    });
-    setChannelInfo(data.items.shift());
-    setLoading(false);
-  }
+  const { snippet, contentDetails } = video;
+  const [channel, loading] = useChannel(video.snippet.channelId);
 
   const duration = (dur) => {
     const secs = moment.duration(dur).asSeconds();
     return moment.utc(secs * 1000).format('mm:ss');
-  }
-
-  const views = (viewCount) => {
-    return numeral(viewCount).format('0.a').toUpperCase();
-  }
-
-  const published = (publishedAt) => {
-    return moment(publishedAt).fromNow();
   }
 
   return (
@@ -143,9 +104,9 @@ const VideoTile = ({ video }) => {
       </div>
       <div className={classes.container}>
         <div className={classes.channelThumbnail}>
-          {channelInfo && 
+          {channel && 
             <img 
-              src={channelInfo.snippet.thumbnails.default.url} 
+              src={channel.snippet.thumbnails.default.url} 
               className={`${clsx(
                 classes.channelImg, 
                 { [classes.hide]: loading })
@@ -156,20 +117,7 @@ const VideoTile = ({ video }) => {
           <div className={`${clsx(classes.channelThumbnailBackdrop, { [classes.hide]: !loading })}`}></div>
         </div>
         <div className={`${clsx(classes.videoDetails, { [classes.hide]: loading })}`}>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" className={`${classes.videoTitle} line-clamp`}>
-              {snippet.title}
-            </Typography>
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-          </div>
-          <Typography variant="body2" className={classes.subHeaderText}>
-            {snippet.channelTitle}
-          </Typography>
-          <Typography variant="body2" className={classes.subHeaderText}>
-            {views(statistics.viewCount)} views <span className={classes.bullet}>•</span> {published(snippet.publishedAt)}
-          </Typography>
+          <VideoTileDetails video={video} />
         </div>
         <div className={`${clsx(classes.videoDetailsBackdrop, { [classes.hide]: !loading })}`}>
           <div className={classes.backdropLine} style={{width: '90%'}}></div>

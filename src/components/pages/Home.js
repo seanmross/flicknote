@@ -1,9 +1,10 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import youtube from '../../api/youtube';
 import VideoTile from '../VideoTile';
+import useVideos from '../../hooks/useVideos';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -13,37 +14,37 @@ const useStyles = makeStyles((theme) => ({
       marginTop: 0,
     },
   },
-  hide: {
-    display: 'none'
-  },
+  spinner: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: theme.spacing(2)
+  }
 }));
 
 const Home = () => {
   const classes = useStyles();
-  const [videos, setVideos] = useState([]);
+  const [videos, getNextVideos] = useVideos();
 
-  const getVideos = async () => {
-    const { data } = await youtube.get('/videos', {
-      params: {
-        part: 'snippet,statistics,contentDetails',
-        chart: 'mostPopular',
-        regionCode: 'US',
-        maxResults: 12
-      }
-    });
-    setVideos(data.items);
-  }
-
-  useEffect(() => {
-    getVideos();
-  }, []);
+  const spinner = (
+    <div className={classes.spinner}>
+      <CircularProgress color="secondary" />
+    </div>
+  );
 
   return (
-    <Grid container spacing={3} className={classes.container}>
-      {videos && videos.map((video, idx) => (
-        <VideoTile video={video} key={video.id}></VideoTile>
-      ))}
-    </Grid>
+    <InfiniteScroll
+      dataLength={videos.length}
+      next={getNextVideos}
+      hasMore={false}
+      loader={spinner}
+      scrollThreshold={1}
+    >
+      <Grid container spacing={3} className={classes.container}>
+        {videos && videos.map((video) => (
+          <VideoTile video={video} key={video.id}></VideoTile>
+        ))}  
+      </Grid>
+    </InfiniteScroll>
   );
 }
 export default Home;

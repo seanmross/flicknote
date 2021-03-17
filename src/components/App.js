@@ -35,6 +35,7 @@ const App = () => {
     provider.addScope('https://www.googleapis.com/auth/youtube.force-ssl');
     const userCredential = await auth.signInWithPopup(provider);
     setAccessToken(userCredential.credential.accessToken);
+    console.log(accessToken)
   }
 
   const onSignOut = () => {

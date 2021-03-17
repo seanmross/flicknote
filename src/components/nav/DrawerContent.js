@@ -5,7 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import { Bookmarks, Favorite, Home, Grade, Schedule } from '@material-ui/icons';
+import { Bookmarks, Favorite, Home, Grade, WatchLater } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/flick-note-logo-light.svg';
@@ -34,7 +34,7 @@ const drawerItems = [
   { name: 'Bookmarks', icon: <Bookmarks />, link: '/bookmarks' },
   { name: 'Favorites', icon: <Favorite />, link: 'favorites' },
   { name: 'Top Notes', icon: <Grade />, link: '/top-notes' },
-  { name: 'Study Later', icon: <Schedule />, link: '/study-later' },
+  { name: 'Study Later', icon: <WatchLater />, link: '/study-later' },
 ];
 
 const DrawerContent = ({isMobile, handleMobileDrawerToggle, handleDrawerToggle}) => {

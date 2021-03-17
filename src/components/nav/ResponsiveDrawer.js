@@ -68,19 +68,8 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-
   const windowSize = useWindowSize();
-
   const container = window.document.body;
-
-  const handleAccountMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -104,9 +93,6 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
         isMobile={isMobile} 
         handleMobileDrawerToggle={handleMobileDrawerToggle}
         handleDrawerToggle={handleDrawerToggle}
-        handleAccountMenuOpen={handleAccountMenuOpen} 
-        anchorEl={anchorEl}
-        handleMenuClose={handleMenuClose} 
         onSignOut={onSignOut}
         user={user}
       />

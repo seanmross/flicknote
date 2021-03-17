@@ -5,6 +5,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import DrawerContent from './DrawerContent';
 import TopBar from './TopBar';
+import useWindowSize from '../../hooks/useWindowSize';
 
 const drawerWidth = 240;
 
@@ -50,14 +51,14 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: 0,
+    padding: theme.spacing(1),
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing(2),
     },
     [theme.breakpoints.up('md')]: {
       padding: theme.spacing(3),
     },
-    maxWidth: '1600px',
+    // maxWidth: '1600px',
     margin: '0 auto',
   },
 }));
@@ -68,6 +69,8 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const windowSize = useWindowSize();
 
   const container = window.document.body;
 
@@ -87,19 +90,13 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleWindowResize = () => {
-    setIsMobile(window.innerWidth < 960);
+  useEffect(() => {
+    if (windowSize) {
+      setIsMobile(windowSize.width < 960);
+    }
     setOpen(false);
     setMobileOpen(false);
-  }
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 960);
-    window.addEventListener('resize', handleWindowResize);
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    }
-  }, []);
+  }, [windowSize]);
 
   return (
     <div className={classes.root}>

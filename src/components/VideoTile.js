@@ -1,56 +1,105 @@
+import { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import moment from 'moment';
+import numeral from 'numeral';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import moment from 'moment';
-import numeral from 'numeral';
-import { useEffect, useState } from 'react';
-import ClampLines from 'react-clamp-lines';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import youtube from '../api/youtube';
+import './VideoTile.scss';
 
 const useStyles = makeStyles((theme) => ({
   gridItem: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
+    minWidth: '336px',
+    '&:hover': {
+      cursor: 'pointer'
+    }
+  },
+  videoThumbnail: {
+    position: 'relative',
+    display: 'flex',
     justifyContent: 'center'
   },
+  videoImg: {
+    width: '320px',
+    height: '180px'
+  },
+  duration: {
+    position: 'absolute',
+    right: '6px',
+    bottom: '6px',
+    backgroundColor: theme.palette.primary.main,
+    padding: '0 4px'
+  },
   container: {
-    display: 'flex'
+    display: 'flex',
+    width: '320px'
   },
   channelThumbnail: {
-    padding: theme.spacing(2),
-    paddingRight: theme.spacing(1)
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
-  channelPhoto: {
+  channelImg: {
     width: '36px',
     height: '36px',
     borderRadius: '50%'
   },
   videoDetails: {
-    padding: theme.spacing(1),
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
   },
   videoTitle: {
-    fontSize: theme.typography.body1.fontSize,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   subHeaderText: {
     color: theme.palette.text.secondary
   },
   bullet: {
     margin: '0 2px'
-  }
-}))
+  },
+  hide: {
+    display: 'none'
+  },
+  videoThumbnailBackdrop: {
+    width: '320px',
+    height: '180px',
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: '3px'
+  },
+  channelThumbnailBackdrop: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main
+  },
+  videoDetailsBackdrop: {
+    width: '276px',
+    height: '92px',
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+  },
+  backdropLine: {
+    height: '20px',
+    backgroundColor: theme.palette.primary.main,
+    marginBottom: theme.spacing(1),
+    borderRadius: '2px'
+  },
+}));
 
 const VideoTile = ({ video }) => {
   const classes = useStyles();
   const [channelInfo, setChannelInfo] = useState(null);
   const { snippet, statistics, contentDetails } = video;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (video) {
-      getChannelInfo(video.snippet.channelId);
-    }
+    setLoading(true);
+    getChannelInfo(video.snippet.channelId);
   }, [video]);
 
   const getChannelInfo = async (id) => {
@@ -60,7 +109,8 @@ const VideoTile = ({ video }) => {
         id
       }
     });
-    setChannelInfo(data.items.shift())
+    setChannelInfo(data.items.shift());
+    setLoading(false);
   }
 
   const duration = (dur) => {
@@ -77,30 +127,53 @@ const VideoTile = ({ video }) => {
   }
 
   return (
-    <Grid item xs={12} className={classes.gridItem}>
-      <img src={snippet.thumbnails.medium.url} alt=""/>
+    <Grid item xs={12} sm={6} md={3} lg={2} xl={1} className={classes.gridItem}>
+      <div className={classes.videoThumbnail}>
+        <div className={classes.videoThumbnail}></div>
+        <img 
+          src={snippet.thumbnails.medium.url} 
+          className={`${clsx(classes.videoImg, { [classes.hide]: loading })}`} 
+          alt="" 
+        />
+        <div className={`${clsx(classes.duration, { [classes.hide]: loading })}`}>
+          {duration(contentDetails.duration)}
+        </div>
+        <div className={`${clsx(classes.videoThumbnailBackdrop, { [classes.hide]: !loading })}`}>
+        </div>
+      </div>
       <div className={classes.container}>
         <div className={classes.channelThumbnail}>
-          {channelInfo ? 
-            <img src={channelInfo.snippet.thumbnails.default.url} className={classes.channelPhoto} alt=""/> : 
-            <AccountCircle style={{ fontSize: 36 }} />}
+          {channelInfo && 
+            <img 
+              src={channelInfo.snippet.thumbnails.default.url} 
+              className={`${clsx(
+                classes.channelImg, 
+                { [classes.hide]: loading })
+              }`} 
+              alt=""
+            />
+          }
+          <div className={`${clsx(classes.channelThumbnailBackdrop, { [classes.hide]: !loading })}`}></div>
         </div>
-        <div className={classes.videoDetails}>
-          <ClampLines
-            text={snippet.title}
-            id={video.id}
-            lines={2}
-            buttons={false}
-            ellipsis="..."
-            className={classes.videoTitle} 
-          />
+        <div className={`${clsx(classes.videoDetails, { [classes.hide]: loading })}`}>
+          <div style={{display: 'flex'}}>
+            <Typography variant="body1" className={`${classes.videoTitle} line-clamp`}>
+              {snippet.title}
+            </Typography>
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          </div>
           <Typography variant="body2" className={classes.subHeaderText}>
             {snippet.channelTitle}
           </Typography>
           <Typography variant="body2" className={classes.subHeaderText}>
             {views(statistics.viewCount)} views <span className={classes.bullet}>•</span> {published(snippet.publishedAt)}
           </Typography>
-          {/* <Typography>{duration(contentDetails.duration)}</Typography> */}
+        </div>
+        <div className={`${clsx(classes.videoDetailsBackdrop, { [classes.hide]: !loading })}`}>
+          <div className={classes.backdropLine} style={{width: '90%'}}></div>
+          <div className={classes.backdropLine} style={{width: '60%'}}></div>
         </div>
       </div>
     </Grid>

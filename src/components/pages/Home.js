@@ -1,9 +1,25 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import youtube from '../../api/youtube';
 import VideoTile from '../VideoTile';
-import Grid from '@material-ui/core/Grid';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    justifyContent: 'center',
+    marginTop: theme.spacing(1),
+    [theme.breakpoints.up('sm')]: {
+      marginTop: 0,
+    },
+  },
+  hide: {
+    display: 'none'
+  },
+}));
 
 const Home = () => {
+  const classes = useStyles();
   const [videos, setVideos] = useState([]);
 
   const getVideos = async () => {
@@ -12,7 +28,7 @@ const Home = () => {
         part: 'snippet,statistics,contentDetails',
         chart: 'mostPopular',
         regionCode: 'US',
-        maxResults: 10
+        maxResults: 12
       }
     });
     setVideos(data.items);
@@ -23,8 +39,8 @@ const Home = () => {
   }, []);
 
   return (
-    <Grid container spacing={2}>
-      {videos.map(video => (
+    <Grid container spacing={3} className={classes.container}>
+      {videos && videos.map((video, idx) => (
         <VideoTile video={video} key={video.id}></VideoTile>
       ))}
     </Grid>

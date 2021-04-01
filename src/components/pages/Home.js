@@ -3,16 +3,19 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import VideoTile from '../VideoTile';
+import VideoTile from '../video-tile/VideoTile';
 import useVideos from '../../hooks/useVideos';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    justifyContent: 'center',
     marginTop: theme.spacing(1),
     [theme.breakpoints.up('sm')]: {
       marginTop: 0,
     },
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
   },
   spinner: {
     display: 'flex',
@@ -41,7 +44,7 @@ const Home = () => {
     >
       <Grid container spacing={3} className={classes.container}>
         {videos && videos.map((video) => (
-          <VideoTile video={video} key={video.id}></VideoTile>
+          <VideoTile video={video} key={video.id} />
         ))}  
       </Grid>
     </InfiniteScroll>

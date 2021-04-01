@@ -15,7 +15,7 @@ const useVideos = () => {
         part: 'snippet,statistics,contentDetails',
         chart: 'mostPopular',
         regionCode: 'US',
-        maxResults: 1,
+        maxResults: 12,
         pageToken: ''
       }
     });

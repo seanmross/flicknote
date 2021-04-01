@@ -10,12 +10,14 @@ import Bookmarks from './pages/Bookmarks';
 import Favorites from './pages/Favorites';
 import TopNotes from './pages/TopNotes';
 import StudyLater from './pages/StudyLater';
+import HomeNew from './pages/HomeNew';
 
 // firebase
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { FIREBASE_CONFIG } from '../config/firebase';
+import Watch from './pages/Watch';
 
 // firebase config
 if (!firebase.apps.length) {
@@ -47,10 +49,12 @@ const App = () => {
       <ResponsiveDrawer onSignOut={onSignOut} user={user}>
         <Switch>
           <Route path="/" exact component={Home} />
+          {/* <Route path="/" exact component={HomeNew} /> */}
           <Route path="/bookmarks" component={Bookmarks} />
           <Route path="/favorites" component={Favorites} />
           <Route path="/top-notes" component={TopNotes} />
           <Route path="/study-later" component={StudyLater} />
+          <Route path="/watch/:videoId" component={Watch} />
           <Redirect to="/" />
         </Switch>
       </ResponsiveDrawer>

@@ -81,7 +81,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
 
   useEffect(() => {
     if (windowSize) {
-      setIsMobile(windowSize.width < 960);
+      setIsMobile(windowSize.width < 1280);
     }
     setOpen(false);
     setMobileOpen(false);
@@ -98,7 +98,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
       />
 
       {/* Mobile drawer */}
-      <Hidden mdUp>
+      <Hidden lgUp>
         <Drawer
           container={container}
           variant="temporary"
@@ -117,7 +117,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
       </Hidden>
 
       {/* Desktop drawer */}
-      <Hidden smDown>
+      <Hidden mdDown>
         <Drawer
           variant="permanent"
           className={clsx(classes.drawer, {

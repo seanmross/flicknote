@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     paddingTop: theme.spacing(1)
   },
+  hide: {
+    display: 'none'
+  },
   channelThumbnail: {
     paddingRight: theme.spacing(1.5),
   },
@@ -24,9 +27,6 @@ const useStyles = makeStyles((theme) => ({
     width: '36px',
     height: '36px',
     borderRadius: '50%'
-  },
-  hide: {
-    display: 'none'
   },
   channelThumbnailBackdrop: {
     width: '36px',
@@ -37,12 +37,6 @@ const useStyles = makeStyles((theme) => ({
   videoDetails: {
     flexGrow: 1
   },
-  // videoDetailsBackdrop: {
-  //   width: '276px',
-  //   height: '92px',
-  //   paddingTop: theme.spacing(1),
-  //   paddingLeft: theme.spacing(1),
-  // },
   header: {
     display: 'flex',
     justifyContent: 'space-between'
@@ -81,11 +75,15 @@ const VideoTileBar = ({ video, channel, loading }) => {
 
   const handleMenuOpen = (event) => {
     event.stopPropagation();
+    event.preventDefault();
+
     setMenuAnchorEl(event.currentTarget);
   }
 
   const handleMenuClose = (event) => {
     event.stopPropagation();
+    event.preventDefault();
+
     setMenuAnchorEl(null);
   }
 
@@ -96,10 +94,7 @@ const VideoTileBar = ({ video, channel, loading }) => {
         {channel && 
           <img 
             src={channel.snippet.thumbnails.default.url} 
-            className={`${clsx(
-              classes.channelImg, 
-              { [classes.hide]: loading })
-            }`} 
+            className={`${clsx(classes.channelImg, { [classes.hide]: loading })}`} 
             alt=""
           />
         }
@@ -128,7 +123,7 @@ const VideoTileBar = ({ video, channel, loading }) => {
       </div>
 
       {/* Menu */}
-      <div>
+      <div className={`${clsx({ [classes.hide]: loading })}`}>
         <IconButton onClick={handleMenuOpen}>
           <MoreVertIcon />
         </IconButton>
@@ -151,7 +146,7 @@ const VideoTileBar = ({ video, channel, loading }) => {
             <ListItemIcon>
               <WatchLater fontSize="small" />
             </ListItemIcon>
-            <Typography variant="inherit">Save to Study later</Typography>
+            <Typography variant="inherit">Add to Study later</Typography>
           </MenuItem>
         </Menu>
       </div>

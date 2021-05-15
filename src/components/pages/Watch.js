@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
@@ -13,24 +13,25 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     color: theme.palette.primary.light,
   },
+  
   container: {
+    maxWidth: '1024px',
+    maxHeight: '576px',
+  },
+  player: {
     position: 'relative',
     width: '100%',
     overflow: 'hidden',
     paddingTop: '56.25%', /* 56.25 16:9 Aspect Ratio */
-    maxWidth: '1280px',
-    maxHeight: '720px'
   },
-  responsiveIframe: {
+  iframe: {
     position: 'absolute',
-    top: '0',
-    left: '0',
-    bottom: '0',
-    right: '0',
-    width: '70%',
-    height: '70%',
-    border: 'none'
-  }
+    width: '100%',
+    height: '100%',
+    left: '0px',
+    top: '0px',
+    border: '0',
+  },
 }));
 
 const Watch = () => {
@@ -53,8 +54,18 @@ const Watch = () => {
     //     </Grid>
     //   </Grid>
     // </Container>
-    <div className={classes.container}> 
-      <iframe className={classes.responsiveIframe} src={`https://www.youtube.com/embed/${videoId}`}></iframe>
+    // <div className={classes.container}> 
+    //   <iframe className={classes.iframe} src={`https://www.youtube.com/embed/${videoId}`}></iframe>
+    // </div>
+    <div className={classes.container}>
+      <div className={classes.player}>
+        <iframe 
+          className={classes.iframe}
+          src={`https://www.youtube.com/embed/${videoId}`}
+          frameBorder="0"
+        >
+        </iframe>
+      </div>
     </div>
   );
 }

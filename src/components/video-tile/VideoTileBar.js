@@ -15,7 +15,13 @@ import './VideoTileDetails.scss';
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    paddingTop: theme.spacing(1)
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   hide: {
     display: 'none'
@@ -56,6 +62,13 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     borderRadius: '2px'
   },
+  menuButton: {
+    opacity: 0,
+    transition: 'opacity 300ms ease-in-out'
+  },
+  reveal: {
+    opacity: 1
+  }
 }));
 
 const VideoTileBar = ({ video, channel, loading }) => {
@@ -123,9 +136,17 @@ const VideoTileBar = ({ video, channel, loading }) => {
       </div>
 
       {/* Menu */}
-      <div className={`${clsx({ [classes.hide]: loading })}`}>
-        <IconButton onClick={handleMenuOpen}>
-          <MoreVertIcon />
+      <div>
+        <IconButton 
+          className={`
+            ${classes.menuButton}  
+            hover-reveal
+            ${clsx({ [classes.reveal]: menuAnchorEl !== null })}`
+          } 
+          size="small" 
+          onClick={handleMenuOpen}
+        >
+          <MoreVertIcon fontSize="medium" />
         </IconButton>
         <Menu
           anchorEl={menuAnchorEl}

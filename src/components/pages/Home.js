@@ -8,10 +8,6 @@ import useVideos from '../../hooks/useVideos';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: theme.spacing(1),
-    [theme.breakpoints.up('sm')]: {
-      marginTop: 0,
-    },
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
@@ -35,19 +31,19 @@ const Home = () => {
   );
 
   return (
-    <InfiniteScroll
-      dataLength={videos.length}
-      next={getNextVideos}
-      hasMore={false}
-      loader={spinner}
-      scrollThreshold={1}
-    >
+    // <InfiniteScroll
+    //   dataLength={videos.length}
+    //   next={getNextVideos}
+    //   hasMore={false}
+    //   loader={spinner}
+    //   scrollThreshold={1}
+    // >
       <Grid container spacing={3} className={classes.container}>
         {videos && videos.map((video) => (
           <VideoTile video={video} key={video.id} />
         ))}  
       </Grid>
-    </InfiniteScroll>
+    // </InfiniteScroll>
   );
 }
 export default Home;

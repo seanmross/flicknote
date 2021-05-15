@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import useChannel from '../../hooks/useChannel';
 import VideoTileBar from './VideoTileBar';
 import backdropImg from '../../assets/video-thumbnail-backdrop.png';
 import './VideoTile.scss';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
 const useStyles = makeStyles((theme) => ({
   gridItem: {
@@ -46,10 +46,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     padding: '0 5px'
   },
-  watchIcon: {
-    marginTop: '5px',
-    marginRight: '5px'
-  }
 }));
 
 const VideoTile = ({ video }) => {
@@ -70,7 +66,7 @@ const VideoTile = ({ video }) => {
         alt="" 
       />
       <div className="overlay">
-        <ExitToAppIcon className={classes.watchIcon} />
+        <PlayCircleFilledIcon style={{ fontSize: 60 }} />
       </div>
       <div className={classes.duration}>
         {duration(contentDetails.duration)}

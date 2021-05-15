@@ -49,16 +49,15 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2),
     ...theme.mixins.toolbar, // necessary for content to be below app bar
   },
-  content: {
+  mainContent: {
     flexGrow: 1,
-    padding: theme.spacing(1),
+    padding: '0',
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing(2),
     },
     [theme.breakpoints.up('md')]: {
       padding: theme.spacing(3),
     },
-    // maxWidth: '1600px',
     margin: '0 auto',
   },
 }));
@@ -139,7 +138,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
         </Drawer>
       </Hidden>
       
-      <main className={classes.content}>
+      <main className={classes.mainContent}>
         <div className={classes.toolbar} />
         {children}
       </main>

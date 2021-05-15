@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, 
+  Route, Redirect, Switch } from 'react-router-dom';
 import theme from '../config/theme';
 import ResponsiveDrawer from './nav/ResponsiveDrawer';
 import Splash from './pages/Splash';

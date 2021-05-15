@@ -12,7 +12,7 @@ const useChannel = (channelId) => {
   const getChannel = async (id) => {
     const { data } = await youtube.get('/channels', {
       params: {
-        part: 'snippet',
+        part: 'snippet,statistics',
         id
       }
     });

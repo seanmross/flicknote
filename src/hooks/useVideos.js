@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import youtube from '../api/youtube';
 
+/**
+ * Fetch a list of videos
+ */
 const useVideos = () => {
   const [videos, setVideos] = useState([]);
   const [pageToken, setPageToken] = useState('');

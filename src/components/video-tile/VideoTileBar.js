@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import clsx from 'clsx';
-import moment from 'moment';
-import numeral from 'numeral';
 import { makeStyles } from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,6 +9,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Bookmarks, WatchLater } from '@material-ui/icons';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import './VideoTileDetails.scss';
+import formatNum from '../../util/formatNum';
+import formatPublishedAt from '../../util/formatPublishedAt';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary
   },
   bullet: {
-    margin: '0 2px'
+    margin: '0 4px'
   },
   backdropLine: {
     height: '20px',
@@ -77,14 +77,6 @@ const VideoTileBar = ({ video, channel, loading }) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const anchorOrigin = { vertical: 'bottom', horizontal: 'right' };
   const transformOrigin = { vertical: 'top', horizontal: 'right' };
-
-  const views = (viewCount) => {
-    return numeral(viewCount).format('0.a').toUpperCase();
-  }
-
-  const published = (publishedAt) => {
-    return moment(publishedAt).fromNow();
-  }
 
   const handleMenuOpen = (event) => {
     event.stopPropagation();
@@ -126,7 +118,9 @@ const VideoTileBar = ({ video, channel, loading }) => {
             {snippet.channelTitle}
           </Typography>
           <Typography variant="body2" className={classes.subHeaderText}>
-            {views(statistics.viewCount)} views <span className={classes.bullet}>•</span> {published(snippet.publishedAt)}
+            {formatNum(statistics.viewCount)} views 
+            <span className={classes.bullet}>•</span> 
+            {formatPublishedAt(snippet.publishedAt)}
           </Typography>
         </div>
         <div className={`${clsx({ [classes.hide]: !loading })}`}>
@@ -146,7 +140,7 @@ const VideoTileBar = ({ video, channel, loading }) => {
           size="small" 
           onClick={handleMenuOpen}
         >
-          <MoreVertIcon fontSize="medium" />
+          <MoreVertIcon />
         </IconButton>
         <Menu
           anchorEl={menuAnchorEl}

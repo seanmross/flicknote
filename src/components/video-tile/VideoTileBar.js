@@ -8,7 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Bookmarks, WatchLater } from '@material-ui/icons';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import './VideoTileDetails.scss';
+import './VideoTileBar.scss';
 import formatNum from '../../util/formatNum';
 import formatPublishedAt from '../../util/formatPublishedAt';
 
@@ -110,7 +110,7 @@ const VideoTileBar = ({ video, channel, loading }) => {
       <div className={classes.videoDetails}>
         <div className={`${clsx({ [classes.hide]: loading })}`}>
           <div className={classes.header}>
-            <Typography variant="body1" className={`${classes.videoTitle} line-clamp`}>
+            <Typography variant="body1" className={`${classes.videoTitle} clamp-lines`}>
               {snippet.title}
             </Typography>
           </div>

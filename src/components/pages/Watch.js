@@ -4,10 +4,12 @@ import { useParams } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import VideoPlayer from '../video-player/VideoPlayer';
 import WatchInfo from '../watch-info/WatchInfo';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: '1515px',
+    maxWidth: '1500px',
     margin: 'auto'
   },
   paper: {
@@ -23,10 +25,12 @@ const useStyles = makeStyles((theme) => ({
 const Watch = () => {
   const classes = useStyles();
   const { videoId } = useParams();
+  const theme = useTheme();
+  const bpMatches = useMediaQuery(theme.breakpoints.up('sm'));
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={bpMatches ? 3 : null}>
         <Grid item xs={12} md={8}>
           <VideoPlayer videoId={videoId} />
         </Grid>

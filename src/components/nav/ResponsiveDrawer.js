@@ -6,6 +6,8 @@ import Hidden from '@material-ui/core/Hidden';
 import DrawerContent from './DrawerContent';
 import TopBar from './TopBar';
 import useWindowSize from '../../hooks/useWindowSize';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 
@@ -66,9 +68,10 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(null);
   const windowSize = useWindowSize();
   const container = window.document.body;
+  const theme = useTheme();
+  const bpMatches = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -78,10 +81,8 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
     setMobileOpen(!mobileOpen);
   };
 
+  // Close menu on resize
   useEffect(() => {
-    if (windowSize) {
-      setIsMobile(windowSize.width < 1280);
-    }
     setOpen(false);
     setMobileOpen(false);
   }, [windowSize]);
@@ -89,7 +90,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
   return (
     <div className={classes.root}>
       <TopBar 
-        isMobile={isMobile} 
+        isMobile={bpMatches} 
         handleMobileDrawerToggle={handleMobileDrawerToggle}
         handleDrawerToggle={handleDrawerToggle}
         onSignOut={onSignOut}
@@ -108,7 +109,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
           ModalProps={{keepMounted: true}}
         >
           <DrawerContent 
-            isMobile={isMobile} 
+            isMobile={bpMatches} 
             handleMobileDrawerToggle={handleMobileDrawerToggle} 
             handleDrawerToggle={handleDrawerToggle}
           />
@@ -131,7 +132,7 @@ const ResponsiveDrawer = ({ onSignOut, user, children }) => {
           }}
         >
           <DrawerContent 
-            isMobile={isMobile} 
+            isMobile={bpMatches} 
             handleMobileDrawerToggle={handleMobileDrawerToggle} 
             handleDrawerToggle={handleDrawerToggle} 
           />

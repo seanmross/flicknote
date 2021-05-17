@@ -12,7 +12,9 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
-import Paper from '@material-ui/core/Paper';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
   },
   stats: {
     color: theme.palette.text.secondary,
+  },
+  statsSpacing: {
     marginBottom: theme.spacing(2)
   },
   bullet: {
@@ -36,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
     width: '48px',
     height: '48px',
     borderRadius: '50%',
-    marginRight: theme.spacing(1.5)
+    marginRight: theme.spacing(1.5),
+    backgroundColor: theme.palette.primary.light
   },
   channelTitle: {
     fontWeight: 'bold'
@@ -52,66 +57,121 @@ const useStyles = makeStyles((theme) => ({
   accordionDetails: {
     flexDirection: 'column'
   },
+  accordionSummary: {
+    flex: 1
+  },
   description: {
     whiteSpace: 'pre-wrap'
-  },
-  accordionSummary: {
-    flexDirection: 'column'
-  },
-  statsMobile: {
-    margin: 0
   },
   showMoreBtn: {
     display: 'flex',
     justifyContent: 'center',
     marginTop: theme.spacing(2)
+  },
+  largeBackdropLine: {
+    height: '32px',
+    backgroundColor: theme.palette.primary.light,
+    marginBottom: theme.spacing(1),
+    borderRadius: '2px'
+  },
+  smallBackdropLine: {
+    height: '20px',
+    backgroundColor: theme.palette.primary.light,
+    marginBottom: theme.spacing(1),
+    borderRadius: '2px'
+  },
+  grow: {
+    flex: 1
   }
 }));
 
 const WatchInfo = ({ videoId }) => {
   const classes = useStyles();
-  const [video, videoLoading] = useVideo(videoId);
-  const [channel, channelLoading] = useChannel(video?.snippet.channelId);
-
+  const [video] = useVideo(videoId);
+  const [channel, loading] = useChannel(video?.snippet.channelId);
   const [showMore, setShowMore] = useState(false);
+  const theme = useTheme();
+  const bpMatches = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const showMoreBtnText = () => {
-    return !showMore ? 'show more' : 'show less';
-  }
+  const channelInfo = (channel) => (
+    <div className={classes.channelInfo}>
+      <img 
+        className={classes.channelImg}
+        src={channel.snippet.thumbnails.default.url}  
+        alt=""
+      />
+      <div>
+        <Typography variant="body1" className={classes.channelTitle}>
+          {channel.snippet.title}
+        </Typography>
+        <Typography variant="body2" className={classes.subscribers}>
+          {formatNum(channel.statistics.subscriberCount)} subscribers
+        </Typography>
+      </div>
+    </div>
+  );
 
-  const content = (video, channel) => (
+  const videoDescription = (video) => (
     <React.Fragment>
+      <Collapse in={showMore} collapsedHeight={40}>
+        <Typography variant="body2" className={classes.description}>
+          {video.snippet.description}
+        </Typography>
+      </Collapse>
+      <div className={classes.showMoreBtn}>
+        <Button onClick={() => setShowMore(!showMore)}>
+          {!showMore ? 'show more' : 'show less'}
+        </Button>
+      </div>
+    </React.Fragment>
+  );
+
+  const header = (video) => (
+    <React.Fragment>
+      <Typography variant={bpMatches ? 'h6' : 'body1'}>{video.snippet.title}</Typography>
+      <Typography variant="body2" className={clsx(classes.stats, { [classes.statsSpacing]: bpMatches })}>
+        {formatNum(video.statistics.viewCount)} views 
+        <span className={classes.bullet}>•</span> 
+        {formatPublishedAt(video.snippet.publishedAt)}
+      </Typography>
+    </React.Fragment>
+  )
+
+  const headerBackdrop = (
+    <div className={clsx({[classes.statsSpacing]: bpMatches })}>
+      <div className={clsx({ 
+        [classes.largeBackdropLine]: bpMatches, 
+        [classes.smallBackdropLine]: !bpMatches
+        })} style={{width: '90%'}}>
+      </div>
+      <div className={classes.smallBackdropLine} style={{width: '30%'}}></div>
+    </div>
+  );
+
+  const channelInfoBackdrop = (
+    <div className={classes.channelInfo}>
+      <div className={classes.channelImg}></div>
+      <div className={classes.grow}>
+        <div className={classes.smallBackdropLine} style={{width: '60%'}}></div>
+        <div className={classes.smallBackdropLine} style={{width: '30%'}}></div>
+      </div>
+    </div>
+  );
+
+  const vidDescriptionBackdrop = (
+    <>
+      <div className={classes.smallBackdropLine} style={{width: '100%'}}></div>
+      <div className={classes.smallBackdropLine} style={{width: '60%'}}></div>
+    </>
+  );
+
+  return (
+    <div className={classes.root}>
       {/* Desktop */}
       <Hidden smDown>
-        <Typography variant="h6">{video.snippet.title}</Typography>
-        <Typography variant="body2" className={classes.stats}>
-          {formatNum(video.statistics.viewCount)} views 
-          <span className={classes.bullet}>•</span> 
-          {formatPublishedAt(video.snippet.publishedAt)}
-        </Typography>
-        <div className={classes.channelInfo}>
-          <img 
-            className={classes.channelImg}
-            src={channel.snippet.thumbnails.default.url}  
-            alt=""
-          />
-          <div>
-            <Typography variant="body1" className={classes.channelTitle}>
-              {channel.snippet.title}
-            </Typography>
-            <Typography variant="body2" className={classes.subscribers}>
-              {formatNum(channel.statistics.subscriberCount)} subscribers
-            </Typography>
-          </div>
-        </div>
-        <Collapse in={showMore} collapsedHeight={40}>
-          <Typography variant="body2" className={classes.description}>
-            {video.snippet.description}
-          </Typography>
-        </Collapse>
-        <div className={classes.showMoreBtn}>
-          <Button onClick={() => setShowMore(!showMore)}>{showMoreBtnText()}</Button>
-        </div>
+        {video ? header(video) : headerBackdrop}
+        {channel ? channelInfo(channel) : channelInfoBackdrop}
+        {video ? videoDescription(video) : vidDescriptionBackdrop}
       </Hidden>
 
       {/* Mobile */}
@@ -119,141 +179,16 @@ const WatchInfo = ({ videoId }) => {
         <Accordion className={classes.accordion}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <div className={classes.accordionSummary}>
-              <Typography variant="body1">
-                {video.snippet.title}
-              </Typography>
-              <Typography variant="body2" className={`${classes.stats} ${classes.statsMobile}`}>
-                {formatNum(video.statistics.viewCount)} views 
-                <span className={classes.bullet}>•</span> 
-                {formatPublishedAt(video.snippet.publishedAt)}
-              </Typography>
+              {video ? header(video) : headerBackdrop}
             </div>
           </AccordionSummary>
           <AccordionDetails className={classes.accordionDetails}>
-            <div className={classes.channelInfo}>
-              <img 
-                className={classes.channelImg}
-                src={channel.snippet.thumbnails.default.url}  
-                alt=""
-              />
-              <div>
-                <Typography variant="body1" className={classes.channelTitle}>
-                  {channel.snippet.title}
-                </Typography>
-                <Typography variant="body2" className={classes.subscribers}>
-                  {formatNum(channel.statistics.subscriberCount)} subscribers
-                </Typography>
-              </div>
-            </div>
-            <Collapse in={showMore} collapsedHeight={40}>
-              <Typography variant="body2" className={classes.description}>
-                {video.snippet.description}
-              </Typography>
-            </Collapse>
-            <div className={classes.showMoreBtn}>
-              <Button onClick={() => setShowMore(!showMore)}>{showMoreBtnText()}</Button>
-            </div>
+            {channel && channelInfo(channel)}
+            {video && videoDescription(video)}
           </AccordionDetails>
         </Accordion>
       </Hidden>
-    </React.Fragment>
-  );
-
-  return (
-    <div className={classes.root}>
-      {video ? (channel ? content(video, channel) : '') : ''}
     </div>
   );
 }
 export default WatchInfo;
-
-
-const longText = `Welcome to our stream 👋 We hope you have a good time and enjoy the music :)
-Music playing → lofi hip hop / beats
- 
-🎧Listen to the playlist on Spotify, Apple Music & More!
-→ https://collegemusic.co.uk/lofi
-
-✅Listen to our latest YouTube upload here:
-https://collegemusic.co.uk/latest-upload
-
-Join the Discord Family! (Over 10,000 + members) - https://collegemusic.co.uk/discord
-
-Connect with us here 💜 
-Instagram » https://collegemusic.co.uk/instagram
-TikTok » https://collegemusic.co.uk/tiktok
-Twitter » https://collegemusic.co.uk/twitter
-Facebook » https://collegemusic.co.uk/facebook
-Soundcloud » https://collegemusic.co.uk/soundcloud
-Spotify » https://collegemusic.co.uk/lofi
-Snapchat » https://collegemusic.co.uk/snapchat
-
-▶️ YouTube Lofi Playlist - http://bit.ly/YouTubeLofiPlaylist
-
---- --- ---
-
-We care about our listeners, particularly those of you who have talked about feeling alone or depressed, or even suicidal. We know sometimes things can get tough, but we want to let you know you’re not alone and there are people out there who can help. 
-
-Our study girl recently took a break to focus on her own mental health. To find out more about what happened, click here: 
-
-→  https://collegemusic.co.uk/what-happened
-
-At the link below, you’ll find a selection of VICE articles offering mental health support, which we hope will act as guidance, advice and simply a reminder: You are not alone.
-
-→ https://collegemusic.co.uk/vice-support
-
---- --- ---
-
-환영합니다! 여기에서 즐거운 시간을 보내시고, 감미로운 비트를 즐겨주시기 바랍니다!
-
-Subscribing (with notifications 🔔 turned on) & liking the stream helps so much 💙 + if the stream goes down you'll get notified the new link immediately!
-
-Help us keep this stream running 🔌 - 
-Paypal: https://goo.gl/ySwmf7
-
-- Useful Chat Commands (봇 명령어) -
-​!talk "Whatever you wanna say"  » Nightbot will talk back to you!
-!song » Displays the current song playing
-!donate » Help us keep the stream going!
-!weather enterlocation » Tells you the weather at the location specified 
-!share » Generates a Twitter link to share
-!social » Shows College Music social media links
-!subscribe » Gives you a link to subscribe to our channel
-!contact » Stream not working? Let us know 
-!rules » Help familiarize yourself with our chat rules
-!hug » Feeling lonely?
-!funny » Our bot's funniest quote of the day
-
-If you or a friend are experiencing suicidal feelings, please use the appropriate command in the live chat to show relevant helpline information:
-
-!helpusa » displays mental health helpline info for USA
-!helpuk » displays mental health helpline info for UK
-!helprussia » displays mental health helpline info for Russia
-!helpmexico » displays mental health helpline info for Mexico
-!helpkor » displays mental health helpline info for South Korea
-!helpjapan » displays mental health helpline info for Japan
-!helpgermany » displays mental health helpline info for Germany
-!helpfrance » displays mental health helpline info for France
-!helpcanda » displays mental health helpline info for Canada
-!helpbrazil » displays mental health helpline info for Brazil
-!global » displays mental health helpline for the rest of the world
-
----- FAQs ----
-
-➤ Genres?
-Lofi Hiphop - JazzHop - Chillhop - Ambient - Electronic
-
-➤ How long have you been streaming?
-We were one of the first music channels to stream on YouTube! We have been running lofi streams since 2017 and others since early 2016! 
-
-➤ How long will this be online?
-All day, everyday. 
-
- --------
-✖ Background and animation by Gloria Gemignani
-Music in this video
-Learn more
-Listen ad-free with YouTube Premium
-Song
-lofi hip hop radio - beats to study/chill/relax
-`

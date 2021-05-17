@@ -6,7 +6,6 @@ import youtube from '../api/youtube';
  */
 const useVideo = (id) => {
   const [video, setVideo] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getVideo(id);
@@ -20,9 +19,8 @@ const useVideo = (id) => {
       }
     });
     setVideo(data.items[0]);
-    setLoading(false);
   }
 
-  return [video, loading];
+  return [video];
 }
 export default useVideo;

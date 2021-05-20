@@ -6,6 +6,7 @@ import VideoPlayer from '../video-player/VideoPlayer';
 import WatchInfo from '../watch-info/WatchInfo';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
+import Notes from '../notes/Notes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   watchInfoContainer: {
     backgroundColor: theme.palette.primary.main
-  }
+  },
 }));
 
 const Watch = () => {
@@ -28,16 +29,35 @@ const Watch = () => {
   const theme = useTheme();
   const bpMatches = useMediaQuery(theme.breakpoints.up('sm'));
 
+  const mobile = (videoId) => (
+    <Grid container>
+      <Grid item xs={12}>
+        <VideoPlayer videoId={videoId} />
+      </Grid>
+      <Grid item xs={12}>
+        <WatchInfo videoId={videoId} />
+      </Grid>
+      <Grid item xs={12}>
+        <Notes />
+      </Grid>
+    </Grid>
+  );
+
+  const desktop = (videoId) => (
+    <Grid container spacing={3}>
+      <Grid item md={8}>
+        <VideoPlayer videoId={videoId} />
+        <Notes />
+      </Grid>
+      <Grid item md={4}>
+        <WatchInfo videoId={videoId} />
+      </Grid>
+    </Grid>
+  );
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={bpMatches ? 3 : null}>
-        <Grid item xs={12} md={8}>
-          <VideoPlayer videoId={videoId} />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <WatchInfo videoId={videoId} />
-        </Grid>
-      </Grid>
+      {bpMatches ? desktop(videoId) : mobile(videoId)}
     </div>
   );
 }

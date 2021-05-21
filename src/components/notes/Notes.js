@@ -38,21 +38,35 @@ const useStyles = makeStyles(theme => ({
 
 const Notes = () => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const anchorOrigin = { vertical: 'bottom', horizontal: 'left' };
-  const transformOrigin = { vertical: 'top', horizontal: 'left' };
+  const [sortAnchorEl, sortSortAnchorEl] = useState(null);
   const [noteType, setNoteType] = useState('note');
+  const [value, setValue] = useState('');
+  const [notesList, setNotesList] = useState([]);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleClickSort = (e) => {
+    sortSortAnchorEl(e.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseSort = () => {
+    sortSortAnchorEl(null);
   };
 
-  const changeNoteType = (type) => {
+  const handleChangeNoteType = (type) => {
     setNoteType(type);
+  }
+
+  const handleInputEnter = (e) => {
+    if (e.key === 'Enter') {
+      addNote();
+    }
+  }
+
+  const addNote = () => {
+    setNotesList([
+      ...notesList,
+      value
+    ]);
+    setValue('');
   }
 
   return (
@@ -61,57 +75,78 @@ const Notes = () => {
         <Typography variant="h6" className={classes.noteCount}>
           0 Notes
         </Typography>
-        <Button onClick={handleClick} startIcon={<SortIcon />}>
+        <Button onClick={handleClickSort} startIcon={<SortIcon />}>
           sort by
         </Button>
         <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={anchorOrigin}
+          anchorEl={sortAnchorEl}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           getContentAnchorEl={null}
-          transformOrigin={transformOrigin}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
           keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
+          open={Boolean(sortAnchorEl)}
+          onClose={handleCloseSort}
         >
-          <MenuItem onClick={handleClose}>From beginning</MenuItem>
-          <MenuItem onClick={handleClose}>From end</MenuItem>
+          <MenuItem onClick={handleCloseSort}>From beginning</MenuItem>
+          <MenuItem onClick={handleCloseSort}>From end</MenuItem>
         </Menu>
       </div>
       <div className={classes.row}>
         <TextField
-          placeholder={`Add a ${noteType == 'note' ? 'note' : 'quote'}...`}
-          multiline
-          rowsMax={5}
+          value={value}
+          onInput={e => setValue(e.target.value)}
+          onKeyPress={handleInputEnter}
+          placeholder={`Add a ${noteType === 'note' ? 'note' : 'quote'}...`}
           fullWidth
           variant="outlined"
-          InputProps={{
-            startAdornment: 
-              <InputAdornment position="start">
-                {noteType == 'note' ? 
-                  <SpeakerNotesIcon htmlColor="white" /> : 
-                  <FormatQuoteIcon htmlColor="white" />}
-              </InputAdornment>,
+          InputProps={{ startAdornment: 
+            <InputAdornment position="start">
+              {noteType === 'note' ? 
+                <SpeakerNotesIcon htmlColor="white" /> : 
+                <FormatQuoteIcon htmlColor="white" />
+              }
+            </InputAdornment>
           }}
         />
       </div>
       <div className={`${classes.flex} ${classes.row}`}>
         <Tooltip title="Note">
           <IconButton 
-            onClick={() => changeNoteType('note')}
+            onClick={() => handleChangeNoteType('note')}
           >
-            <SpeakerNotesIcon htmlColor={noteType == 'note' ? 'white' : 'gray'} />
+            <SpeakerNotesIcon 
+              htmlColor={
+                noteType === 'note' ? 'white' : 'gray'
+              } 
+            />
           </IconButton>
         </Tooltip>
         <Tooltip title="Quote">
           <IconButton 
-            onClick={() => changeNoteType('quote')}
+            onClick={() => handleChangeNoteType('quote')}
           >
-            <FormatQuoteIcon htmlColor={noteType == 'quote' ? 'white' : 'gray'} />
+            <FormatQuoteIcon 
+              htmlColor={
+                noteType === 'quote' ? 'white' : 'gray'
+              } 
+            />
           </IconButton>
         </Tooltip>
         <div className={classes.grow}></div>
         <Button className={classes.cancelBtn}>cancel</Button>
-        <Button variant="contained" color="secondary">post</Button>
+        <Button 
+          onClick={addNote}
+          disabled={!value}
+          variant="contained" 
+          color="secondary"
+        >
+          post
+        </Button>
+      </div>
+      <div className={classes.row}>
+        <ul>
+          {notesList.map(note => <div>{note}</div> )}
+        </ul>
       </div>
     </div>
   );

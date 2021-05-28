@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import useVideo from '../../hooks/useVideo';
-import useChannel from '../../hooks/useChannel';
 import Typography from '@material-ui/core/Typography';
-import formatNum from '../../util/formatNum';
-import formatPublishedAt from '../../util/formatPublishedAt';
 import Hidden from '@material-ui/core/Hidden';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -14,7 +11,9 @@ import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import clsx from 'clsx';
+import useVideo from '../../hooks/useVideo';
+import useChannel from '../../hooks/useChannel';
+import { formatNum, formatPublishedAt } from '../../util/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -88,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 const WatchInfo = ({ videoId }) => {
   const classes = useStyles();
   const [video] = useVideo(videoId);
-  const [channel, loading] = useChannel(video?.snippet.channelId);
+  const [channel] = useChannel(video?.snippet.channelId);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();
   const bpMatches = useMediaQuery(theme.breakpoints.up('sm'));

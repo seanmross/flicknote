@@ -8,9 +8,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Bookmarks, WatchLater } from '@material-ui/icons';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import { formatNum, formatPublishedAt } from '../../util/utils';
 import './VideoTileBar.scss';
-import formatNum from '../../util/formatNum';
-import formatPublishedAt from '../../util/formatPublishedAt';
 
 const useStyles = makeStyles((theme) => ({
   container: {

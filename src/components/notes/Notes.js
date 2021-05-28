@@ -11,13 +11,20 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+import { sortSecondsAsc } from '../../util/utils';
+import Note from './Note';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(1, 2),
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(2, 2)
-    }
+    // marginTop: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      marginTop: theme.spacing(2),
+    },
+  },
+  header: {
+    marginBottom: theme.spacing(2),
+    backgroundColor: theme.palette.primary.main,
+    padding: theme.spacing(2)
   },
   flex: {
     display: 'flex'
@@ -36,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Notes = () => {
+const Notes = ({ player }) => {
   const classes = useStyles();
   const [sortAnchorEl, sortSortAnchorEl] = useState(null);
   const [noteType, setNoteType] = useState('note');
@@ -62,92 +69,86 @@ const Notes = () => {
   }
 
   const addNote = () => {
+    const seconds = player.getCurrentTime();
+    const newNote = {
+      value: noteValue,
+      type: noteType,
+      seconds,
+    };
+
     setNotesList([
       ...notesList,
-      noteValue
+      newNote
     ]);
+
     setNoteValue('');
   }
 
   return (
     <div className={classes.root}>
-      <div className={`${classes.flex} ${classes.row}`}>
-        <Typography variant="h6" className={classes.noteCount}>
-          0 Notes
-        </Typography>
-        <Button onClick={handleClickSort} startIcon={<SortIcon />}>
-          sort by
-        </Button>
-        <Menu
-          anchorEl={sortAnchorEl}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          getContentAnchorEl={null}
-          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-          keepMounted
-          open={Boolean(sortAnchorEl)}
-          onClose={handleCloseSort}
-        >
-          <MenuItem onClick={handleCloseSort}>From beginning</MenuItem>
-          <MenuItem onClick={handleCloseSort}>From end</MenuItem>
-        </Menu>
-      </div>
-      <div className={classes.row}>
-        <TextField
-          value={noteValue}
-          onInput={e => setNoteValue(e.target.value)}
-          onKeyPress={handleInputEnter}
-          placeholder={`Add a ${noteType === 'note' ? 'note' : 'quote'}...`}
-          fullWidth
-          variant="outlined"
-          InputProps={{ startAdornment: 
-            <InputAdornment position="start">
-              {noteType === 'note' ? 
-                <SpeakerNotesIcon htmlColor="white" /> : 
-                <FormatQuoteIcon htmlColor="white" />
-              }
-            </InputAdornment>
-          }}
-        />
-      </div>
-      <div className={`${classes.flex} ${classes.row}`}>
-        <Tooltip title="Note">
-          <IconButton 
-            onClick={() => handleChangeNoteType('note')}
+      <div className={classes.header}>
+        <div className={`${classes.flex} ${classes.row}`}>
+          <Typography variant="h6" className={classes.noteCount}>
+            {notesList.length} Notes
+          </Typography>
+          <Button onClick={handleClickSort} startIcon={<SortIcon />}>
+            sort by
+          </Button>
+          <Menu
+            anchorEl={sortAnchorEl}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            getContentAnchorEl={null}
+            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+            keepMounted
+            open={Boolean(sortAnchorEl)}
+            onClose={handleCloseSort}
           >
-            <SpeakerNotesIcon 
-              htmlColor={
-                noteType === 'note' ? 'white' : 'gray'
-              } 
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Quote">
-          <IconButton 
-            onClick={() => handleChangeNoteType('quote')}
+            <MenuItem onClick={handleCloseSort}>From beginning</MenuItem>
+            <MenuItem onClick={handleCloseSort}>From end</MenuItem>
+          </Menu>
+        </div>
+        <div className={classes.row}>
+          <TextField
+            value={noteValue}
+            onInput={e => setNoteValue(e.target.value)}
+            onKeyPress={handleInputEnter}
+            placeholder={`Add a ${noteType === 'note' ? 'note' : 'quote'}...`}
+            fullWidth
+            variant="outlined"
+          />
+        </div>
+        <div className={classes.flex}>
+          <Tooltip title="Note">
+            <IconButton 
+              color={noteType === 'note' ? 'secondary' : 'default'}
+              onClick={() => handleChangeNoteType('note')}
+            >
+              <SpeakerNotesIcon htmlColor={noteType === 'note' ? 'inherit' : 'gray'} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Quote">
+            <IconButton 
+              color={noteType === 'quote' ? 'secondary' : 'default'}
+              onClick={() => handleChangeNoteType('quote')}
+            >
+              <FormatQuoteIcon htmlColor={noteType === 'quote' ? 'inherit' : 'gray'} />
+            </IconButton>
+          </Tooltip>
+          <div className={classes.grow}></div>
+          <Button className={classes.cancelBtn}>cancel</Button>
+          <Button 
+            onClick={addNote}
+            disabled={!noteValue}
+            variant="contained" 
+            color="secondary"
           >
-            <FormatQuoteIcon 
-              htmlColor={
-                noteType === 'quote' ? 'white' : 'gray'
-              } 
-            />
-          </IconButton>
-        </Tooltip>
-        <div className={classes.grow}></div>
-        <Button className={classes.cancelBtn}>cancel</Button>
-        <Button 
-          onClick={addNote}
-          disabled={!noteValue}
-          variant="contained" 
-          color="secondary"
-        >
-          post
-        </Button>
+            post
+          </Button>
+        </div>
       </div>
-      <div className={classes.row}>
-        <ul>
-          {notesList.map(note => <div>{note}</div> )}
-        </ul>
-      </div>
+      {notesList.sort(sortSecondsAsc).map((note, i) => (
+        <Note key={i} note={note}></Note>
+      ))}
     </div>
   );
 }

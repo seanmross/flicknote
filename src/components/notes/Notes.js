@@ -40,7 +40,7 @@ const Notes = () => {
   const classes = useStyles();
   const [sortAnchorEl, sortSortAnchorEl] = useState(null);
   const [noteType, setNoteType] = useState('note');
-  const [value, setValue] = useState('');
+  const [noteValue, setNoteValue] = useState('');
   const [notesList, setNotesList] = useState([]);
 
   const handleClickSort = (e) => {
@@ -64,9 +64,9 @@ const Notes = () => {
   const addNote = () => {
     setNotesList([
       ...notesList,
-      value
+      noteValue
     ]);
-    setValue('');
+    setNoteValue('');
   }
 
   return (
@@ -93,8 +93,8 @@ const Notes = () => {
       </div>
       <div className={classes.row}>
         <TextField
-          value={value}
-          onInput={e => setValue(e.target.value)}
+          value={noteValue}
+          onInput={e => setNoteValue(e.target.value)}
           onKeyPress={handleInputEnter}
           placeholder={`Add a ${noteType === 'note' ? 'note' : 'quote'}...`}
           fullWidth
@@ -136,7 +136,7 @@ const Notes = () => {
         <Button className={classes.cancelBtn}>cancel</Button>
         <Button 
           onClick={addNote}
-          disabled={!value}
+          disabled={!noteValue}
           variant="contained" 
           color="secondary"
         >

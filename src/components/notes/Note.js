@@ -1,87 +1,91 @@
-import { formatTime } from '../../util/utils';
+import React from 'react';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+import { formatTime, formatPublishedAt } from '../../util/utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-    marginBottom: theme.spacing(2),
-    padding: theme.spacing(0, 2)
+    padding: theme.spacing(2),
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+      '& .note-actions': {
+        opacity: 1
+      }
+    }
   },
-  adornment: {
+  flex: { 
+    display: 'flex' 
+  },
+  adornment: { 
     paddingRight: theme.spacing(2),
-    paddingTop: theme.spacing(1)
+    alignItems: 'center'
   },
   main: {
-    display: 'flex',
     flexDirection: 'column',
     flex: 1
   },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    paddingBottom: theme.spacing(1)
+  seekTo: {
+    color: '#3EA6FF',
+    '&:hover': {
+      cursor: 'pointer',
+    }
   },
-  body: {
-    paddingBottom: theme.spacing(1)
+  bullet: { 
+    margin: '0 4px' 
   },
-  footer: {
-    display: 'flex',
-    justifyContent: 'space-between',
+  gray: { 
+    color: theme.palette.text.secondary 
   },
-  actions: {
-    display: 'flex'
+  grow: { 
+    flex: 1
   },
-  gray: {
-    color: theme.palette.text.secondary
+  spacingLeft: { 
+    marginLeft: theme.spacing(1) 
   },
-  spacingLeft: {
-    marginLeft: theme.spacing(1)
+  body: { 
+    paddingBottom: theme.spacing(1) 
+  },
+  hide: {
+    opacity: 0
+  },
+  iconBtn: {
+    '&:hover': {
+      cursor: 'pointer'
+    }
   }
-}))
+}));
 
 const Note = ({ note }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <div className={classes.adornment}>
+    <div className={clsx(classes.root, classes.flex)}>
+      <div className={clsx(classes.adornment, classes.flex)}>
         {note.type === 'note' && <SpeakerNotesIcon fontSize="large" />}
         {note.type === 'quote' && <FormatQuoteIcon fontSize="large" />}
       </div>
-      <div className={classes.main}>
-        {/* <div className={classes.header}>
-          <Typography variant="body2" className={classes.gray}>{formatTime(note.seconds)}</Typography>
-        </div> */}
-        <div className={classes.body}>
-          <TextField
-            size="small"
-            value={note.value}
-            fullWidth
-            variant="outlined"
-          />
-        </div>
-        <div className={classes.footer}>
-          <Typography variant="body2" className={`${classes.gray} ${classes.spacingLeft}`}>
+      <div className={clsx(classes.main, classes.flex)}>
+        <div className={classes.flex}>
+          <Typography variant="body2" className={clsx(classes.seekTo)}>
             {formatTime(note.seconds)}
           </Typography>
-          <div className={classes.actions}>
-            <Typography variant="body2" className={`${classes.gray} ${classes.spacingLeft}`}>
-              12 mins ago
-            </Typography>
-            <IconButton size="small" className={classes.spacingLeft}>
-              <EditIcon fontSize="inherit" />
-            </IconButton>
-            <IconButton size="small" className={classes.spacingLeft}>
-              <DeleteIcon fontSize="inherit" />
-            </IconButton>
+          <div className={classes.bullet}>•</div>
+          <Typography variant="body2" className={classes.gray}>
+            {formatPublishedAt(note.date)}
+          </Typography>
+          <div className={classes.grow}></div>
+          <div className={`${classes.hide} note-actions`}>
+            <EditIcon fontSize="small" className={classes.iconBtn} />
+            <DeleteIcon fontSize="small" className={clsx(classes.spacingLeft, classes.iconBtn)} />
           </div>
+        </div>
+        <div className={classes.body}>
+          <Typography variant="body2">{note.value}</Typography>
         </div>
       </div>
     </div>

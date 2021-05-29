@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import SortIcon from '@material-ui/icons/Sort';
 import TextField from '@material-ui/core/TextField';
-import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 import { sortSecondsAsc } from '../../util/utils';
+import theme from '../../config/theme';
 import Note from './Note';
+import NoteTypeButtonGroup from './NoteTypeButtonGroup';
+import SortMenu from './SortMenu';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    // marginTop: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       marginTop: theme.spacing(2),
     },
@@ -40,25 +35,30 @@ const useStyles = makeStyles(theme => ({
   },
   cancelBtn: {
     marginRight: theme.spacing(2)
-  }
-}))
+  },
+  actions: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+}));
+
+const NoteTextField = withStyles({
+  root: {
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.secondary.main,
+      },
+    },
+  },
+})(TextField);
 
 const Notes = ({ player }) => {
   const classes = useStyles();
-  const [sortAnchorEl, sortSortAnchorEl] = useState(null);
   const [noteType, setNoteType] = useState('note');
   const [noteValue, setNoteValue] = useState('');
   const [notesList, setNotesList] = useState([]);
 
-  const handleClickSort = (e) => {
-    sortSortAnchorEl(e.currentTarget);
-  };
-
-  const handleCloseSort = () => {
-    sortSortAnchorEl(null);
-  };
-
-  const handleChangeNoteType = (type) => {
+  const changeNoteType = (type) => {
     setNoteType(type);
   }
 
@@ -70,10 +70,13 @@ const Notes = ({ player }) => {
 
   const addNote = () => {
     const seconds = player.getCurrentTime();
+    const createdAt = new Date().toUTCString();
+
     const newNote = {
       value: noteValue,
       type: noteType,
       seconds,
+      createdAt
     };
 
     setNotesList([
@@ -88,27 +91,13 @@ const Notes = ({ player }) => {
     <div className={classes.root}>
       <div className={classes.header}>
         <div className={`${classes.flex} ${classes.row}`}>
-          <Typography variant="h6" className={classes.noteCount}>
-            {notesList.length} Notes
-          </Typography>
-          <Button onClick={handleClickSort} startIcon={<SortIcon />}>
-            sort by
-          </Button>
-          <Menu
-            anchorEl={sortAnchorEl}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            getContentAnchorEl={null}
-            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            keepMounted
-            open={Boolean(sortAnchorEl)}
-            onClose={handleCloseSort}
-          >
-            <MenuItem onClick={handleCloseSort}>From beginning</MenuItem>
-            <MenuItem onClick={handleCloseSort}>From end</MenuItem>
-          </Menu>
+        <Typography variant="h6" className={classes.noteCount}>
+          {notesList.length} Notes
+        </Typography>
+        <SortMenu />
         </div>
         <div className={classes.row}>
-          <TextField
+          <NoteTextField
             value={noteValue}
             onInput={e => setNoteValue(e.target.value)}
             onKeyPress={handleInputEnter}
@@ -118,32 +107,23 @@ const Notes = ({ player }) => {
           />
         </div>
         <div className={classes.flex}>
-          <Tooltip title="Note">
-            <IconButton 
-              color={noteType === 'note' ? 'secondary' : 'default'}
-              onClick={() => handleChangeNoteType('note')}
-            >
-              <SpeakerNotesIcon htmlColor={noteType === 'note' ? 'inherit' : 'gray'} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Quote">
-            <IconButton 
-              color={noteType === 'quote' ? 'secondary' : 'default'}
-              onClick={() => handleChangeNoteType('quote')}
-            >
-              <FormatQuoteIcon htmlColor={noteType === 'quote' ? 'inherit' : 'gray'} />
-            </IconButton>
-          </Tooltip>
+          <NoteTypeButtonGroup 
+            noteType={noteType} 
+            handleChangeNoteType={changeNoteType} 
+          />
           <div className={classes.grow}></div>
-          <Button className={classes.cancelBtn}>cancel</Button>
-          <Button 
-            onClick={addNote}
-            disabled={!noteValue}
-            variant="contained" 
-            color="secondary"
-          >
-            post
-          </Button>
+          <div className={clsx(classes.actions, classes.flex)}>
+            <Button className={classes.cancelBtn}>cancel</Button>
+            <Button 
+              disableElevation
+              onClick={addNote}
+              disabled={!noteValue}
+              variant="contained" 
+              color="secondary"
+            >
+              post
+            </Button>
+          </div>
         </div>
       </div>
       {notesList.sort(sortSecondsAsc).map((note, i) => (
